@@ -422,7 +422,7 @@ public class mainWindow extends JFrame{
 							e1.printStackTrace();
 						}
 				        StringBuffer buffer = new StringBuffer();
-                        String urlString = "http://github.com/ErdbeerbaerLP/EasyWorldManager/blob/master/modIDRedirects.json";
+                        String urlString = "https://raw.githubusercontent.com/ErdbeerbaerLP/EasyWorldManager/blob/master/modIDRedirects.json";
 				        boolean connected = true;
 							try {
 								URL url = new URL(urlString);
