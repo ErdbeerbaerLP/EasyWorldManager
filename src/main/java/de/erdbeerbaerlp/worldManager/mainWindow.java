@@ -1,21 +1,20 @@
 package de.erdbeerbaerlp.worldManager;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.Toolkit;
+import org.apache.commons.io.FileUtils;
+import org.jnbt.*;
+import org.json.JSONObject;
+import org.zeroturnaround.zip.ZipUtil;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,40 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
-
-import org.apache.commons.io.FileUtils;
-import org.jnbt.CompoundTag;
-import org.jnbt.ListTag;
-import org.jnbt.NBTInputStream;
-import org.jnbt.NBTOutputStream;
-import org.jnbt.StringTag;
-import org.jnbt.Tag;
-import org.json.JSONObject;
-import org.zeroturnaround.zip.ZipUtil;
-import java.awt.Component;
-import javax.swing.Box;
 
 public class mainWindow extends JFrame{
 	private mainWindow mainWindow = this;
@@ -438,7 +403,6 @@ public class mainWindow extends JFrame{
 								s = new NBTInputStream(new FileInputStream(w.getLevelDat()));
 								rootTag = (CompoundTag) s.readTag();
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
 								rootTag = null;
 //								s = null;
 							}
@@ -458,7 +422,7 @@ public class mainWindow extends JFrame{
 							e1.printStackTrace();
 						}
 				        StringBuffer buffer = new StringBuffer();
-				        String urlString = "http://erdbeerbaer.tk/apis/modIDRedirects.json";
+                        String urlString = "http://github.com/ErdbeerbaerLP/EasyWorldManager/blob/master/modIDRedirects.json";
 				        boolean connected = true;
 							try {
 								URL url = new URL(urlString);

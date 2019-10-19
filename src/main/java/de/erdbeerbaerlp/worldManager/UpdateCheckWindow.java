@@ -1,7 +1,11 @@
 package de.erdbeerbaerlp.worldManager;
 
-import java.awt.Desktop;
-import java.awt.Toolkit;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.json.JSONObject;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -11,23 +15,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.util.Set;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
-
-import org.json.JSONObject;
-
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class UpdateCheckWindow extends JDialog {
 	private JLabel lblupdateAvailable;
@@ -108,7 +96,7 @@ public class UpdateCheckWindow extends JDialog {
 		
 		
 		//Update check
-		String urlString = "http://erdbeerbaer.bplaced.net/apis/easyworldmanager.json";
+		String urlString = "github.com/ErdbeerbaerLP/EasyWorldManager/blob/master/easyworldmanager.json";
 		try {
 	        URL url = new URL(urlString);
 	        URLConnection urlConnection = url.openConnection();
@@ -135,12 +123,9 @@ public class UpdateCheckWindow extends JDialog {
 		    	}
 		    }
 		    System.out.println("[UpdateCheck]No update found!");
-		}catch (UnknownHostException e) {
-			System.err.println("[UpdateCheck]Update check failed! Check your internet connection!");
-			JOptionPane.showMessageDialog(this, "Could not connect to the internet to check for updates...\n\nDetails:\n"+e.getLocalizedMessage().replace("erdbeerbaer.bplaced.net", "api.erdbeerbaer.tk"));
 		} catch (Exception e) {
 			System.err.println("[UpdateCheck]Update check failed! Check your internet connection!");
-		    JOptionPane.showMessageDialog(this, "Could not connect to the internet to check for updates...\n\nDetails:\n"+e.getLocalizedMessage().replace("erdbeerbaer.bplaced.net", "api.erdbeerbaer.tk"));
+			JOptionPane.showMessageDialog(this, "Could not connect to the internet to check for updates...\n\nDetails:\n" + e.toString());
 		}
 	}
 }

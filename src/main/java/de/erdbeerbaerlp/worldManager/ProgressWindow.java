@@ -1,13 +1,8 @@
 package de.erdbeerbaerlp.worldManager;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
 
 public class ProgressWindow extends JDialog {
 	private final JProgressBar progressBar = new JProgressBar();
@@ -59,7 +54,6 @@ public void setMaximum(int maximum) {
 	this.progressBar.setMaximum(maximum);
 }
 public boolean isCanceled() {
-	// TODO Auto-generated method stub
 	return cancelled;
 }
 }
