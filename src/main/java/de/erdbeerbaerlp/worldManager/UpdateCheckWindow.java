@@ -96,7 +96,7 @@ public class UpdateCheckWindow extends JDialog {
 		
 		
 		//Update check
-		String urlString = "github.com/ErdbeerbaerLP/EasyWorldManager/blob/master/easyworldmanager.json";
+        String urlString = "http://github.com/ErdbeerbaerLP/EasyWorldManager/blob/master/easyworldmanager.json";
 		try {
 	        URL url = new URL(urlString);
 	        URLConnection urlConnection = url.openConnection();
