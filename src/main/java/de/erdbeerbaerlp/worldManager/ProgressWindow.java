@@ -1,8 +1,6 @@
 package de.erdbeerbaerlp.worldManager;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ProgressWindow extends JDialog {
 	private final JProgressBar progressBar = new JProgressBar();
@@ -26,19 +24,15 @@ public ProgressWindow(int maximum) {
 	getContentPane().add(progressBar);
 	lblmaxModsProcessed.setHorizontalAlignment(SwingConstants.CENTER);
 	lblmaxModsProcessed.setBounds(29, 108, 308, 14);
-	lblmaxModsProcessed.setText("0/"+max+" mods processed");
+	lblmaxModsProcessed.setText("0/" + max + " mods processed");
 	getContentPane().add(lblmaxModsProcessed);
 	lblconnectingToCurseplaese.setHorizontalAlignment(SwingConstants.CENTER);
 	lblconnectingToCurseplaese.setBounds(29, 11, 301, 86);
 	
 	getContentPane().add(lblconnectingToCurseplaese);
-	btnCancel.addActionListener(new ActionListener() {
-		
-
-		public void actionPerformed(ActionEvent arg0) {
-			cancelled = true;
-			btnCancel.setEnabled(false);
-		}
+	btnCancel.addActionListener(arg0 -> {
+		cancelled = true;
+		btnCancel.setEnabled(false);
 	});
 	btnCancel.setBounds(134, 154, 89, 23);
 	

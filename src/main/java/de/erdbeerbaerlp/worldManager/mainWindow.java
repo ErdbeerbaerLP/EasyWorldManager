@@ -126,12 +126,12 @@ public class mainWindow extends JFrame{
 				}
 				}else {
 					if(worldDir != null) {
-					File backup = ((Backup)backups.get(jlist.getSelectedIndex())).getPath();
-					setCursor(new Cursor(Cursor.WAIT_CURSOR));
-					getContentPane().setEnabled(false);
-					ZipUtil.unpack(backup, new File(worldDir+"/"+((Backup)backups.get(jlist.getSelectedIndex())).getFileName()));
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					getContentPane().setEnabled(true);
+						File backup = backups.get(jlist.getSelectedIndex()).getPath();
+						setCursor(new Cursor(Cursor.WAIT_CURSOR));
+						getContentPane().setEnabled(false);
+						ZipUtil.unpack(backup, new File(worldDir + "/" + backups.get(jlist.getSelectedIndex()).getFileName()));
+						setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						getContentPane().setEnabled(true);
 					}
 				}
 			}
@@ -177,7 +177,7 @@ public class mainWindow extends JFrame{
 					}
 				}else {
 					if(jlist.getSelectedIndex() >= 0) {
-						((Backup)backups.get(jlist.getSelectedIndex())).getPath().delete();
+						backups.get(jlist.getSelectedIndex()).getPath().delete();
 						loadBackups();
 					}
 				}
@@ -288,16 +288,15 @@ public class mainWindow extends JFrame{
 					
 					@Override
 					public boolean accept(File f) {
-						if(f.getName().equals("NBTExplorer.exe")) return true;
-						if(f.isDirectory()) return true;
-						return false;
+						if (f.getName().equals("NBTExplorer.exe")) return true;
+						return f.isDirectory();
 					}
 				});
-				choose.setFileSelectionMode(choose.FILES_ONLY);
+				choose.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				choose.setCurrentDirectory(new File("C:"));
 				choose.setApproveButtonText("Use");
 				int result = choose.showOpenDialog(instance);
-				if(result == JFileChooser.CANCEL_OPTION) return;
+				if (result == JFileChooser.CANCEL_OPTION) return;
 				try {
 					Main.saveConfig(Main.backupDir, choose.getSelectedFile().getAbsolutePath(), chckbxAutomaticUpdateCheck.isSelected());
 				} catch (Exception e1) {
@@ -440,112 +439,110 @@ public class mainWindow extends JFrame{
 								connected = false;
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
-								JOptionPane.showMessageDialog(mainWindow, "Could not connect to the internet...\n\nDetails:\n"+e.getLocalizedMessage().replace(urlString, "<hidden>"));
+								JOptionPane.showMessageDialog(mainWindow, "Could not connect to the internet...\n\nDetails:\n" + e.getLocalizedMessage().replace(urlString, "<hidden>"));
 								connected = false;
 								
 							}
-							if(connected) {
-//								getLogger().disableDebug();
-							    JSONObject json = new JSONObject(buffer.toString()); 
-								this.length = modTagList.length;
-								prog.setMaximum(length);
-								prog.updateProgress(0);
-							    Thread t1 = new Thread() {
-							    	public void run() {
-										for (int i = 0; i < (length/4); i++) {
-											System.out.println("1:"+i);
-											if(prog.isCanceled()) break;
-											
-											CompoundTag tg = (CompoundTag) modTagList[i];
-											Map<String, Tag> tgMap = tg.getValue();
-											String modid = ((StringTag)tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
-											if(!modid.equals("minecraft")&&!modid.equals("FML")&&!modid.equals("mcp")) {
-												modList.add(new Mod(modid, ((StringTag)tgMap.get("ModVersion")).getValue(),json));
-											}
-											progress++;
-										}
-							    	}
-							    };
-							    Thread t2 = new Thread() {
-							    	public void run() {
-//							    		System.out.println((length/4)+" < "+(2*length/4));
-										for (int i = (length/4); i < (2*length/4); i++) {
-											System.out.println("2:"+i);
-											if(prog.isCanceled()) break;
-											
-											CompoundTag tg = (CompoundTag) modTagList[i];
-											Map<String, Tag> tgMap = tg.getValue();
-											String modid = ((StringTag)tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
-											if(!modid.equals("minecraft")&&!modid.equals("FML")&&!modid.equals("mcp")) {
-												modList.add(new Mod(modid, ((StringTag)tgMap.get("ModVersion")).getValue(),json));
-												
-											}
-											progress++;
-										}
-							    	}
-							    };
-							    Thread t3 = new Thread() {
-							    	public void run() {
-										for (int i = (2*length/4); i < (3*length/4); i++) {
-											System.out.println("3:"+i);
-											if(prog.isCanceled()) break;
-											
-											CompoundTag tg = (CompoundTag) modTagList[i];
-											Map<String, Tag> tgMap = tg.getValue();
-											String modid = ((StringTag)tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
-											if(!modid.equals("minecraft")&&!modid.equals("FML")&&!modid.equals("mcp")) {
-												modList.add(new Mod(modid, ((StringTag)tgMap.get("ModVersion")).getValue(),json));
-												
-											}
-											progress++;
-											
-										}
-							    	}
-							    };
-							    Thread t4 = new Thread() {
-							    	public void run() {
-										for (int i = (3*length/4); i < length; i++) {
-											System.out.println("4:"+i);
-											if(prog.isCanceled()) break;
-											
-											CompoundTag tg = (CompoundTag) modTagList[i];
-											Map<String, Tag> tgMap = tg.getValue();
-											String modid = ((StringTag)tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
-											if(!modid.equals("minecraft")&&!modid.equals("FML")&&!modid.equals("mcp")) {
-												modList.add(new Mod(modid, ((StringTag)tgMap.get("ModVersion")).getValue(),json));
-												
-											}
-		//									if(i== modTagList.length-1) {
-		//										progress = modTagList.length+1;
-		//									}else {
-											progress++;
-		//									}
-										}
-							    	}
-							    };
-							    Thread checker = new Thread() {
-							    	public void run() {
-							    		while(true) {
-							    			if(!t1.isAlive() && !t2.isAlive() && !t3.isAlive() && !t4.isAlive()) {
-												final ModListWindow win = new ModListWindow(modList, w);
-												prog.setVisible(false);
-												win.setVisible(true);
-												break;
-							    			}else {
-							    				prog.updateProgress(progress);
-							    			}
-							    		}
-							    	}
-							    };
-							    
-							    
-							    t1.start();
-							    t2.start();
-							    t3.start();
-							    t4.start();
-							    checker.start();
-							    prog.setVisible(true);
+						//								getLogger().disableDebug();
+						JSONObject json = new JSONObject(buffer.toString());
+						this.length = modTagList.length;
+						prog.setMaximum(length);
+						prog.updateProgress(0);
+						Thread t1 = new Thread(() -> {
+							for (int i = 0 ; i < (length / 4) ; i++) {
+								System.out.println("1:" + i);
+								if (prog.isCanceled()) break;
+								
+								CompoundTag tg = (CompoundTag) modTagList[i];
+								Map<String, Tag> tgMap = tg.getValue();
+								String modid = ((StringTag) tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
+								if (!modid.equals("minecraft") && !modid.equals("FML") && !modid.equals("mcp")) {
+									modList.add(new Mod(modid, ((StringTag) tgMap.get("ModVersion")).getValue(), json));
+								}
+								progress++;
 							}
+						});
+						Thread t2 = new Thread(() -> {
+//							    		System.out.println((length/4)+" < "+(2*length/4));
+							for (int i = (length / 4) ; i < (2 * length / 4) ; i++) {
+								System.out.println("2:" + i);
+								if (prog.isCanceled()) break;
+								
+								CompoundTag tg = (CompoundTag) modTagList[i];
+								Map<String, Tag> tgMap = tg.getValue();
+								String modid = ((StringTag) tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
+								if (!modid.equals("minecraft") && !modid.equals("FML") && !modid.equals("mcp")) {
+									modList.add(new Mod(modid, ((StringTag) tgMap.get("ModVersion")).getValue(), json));
+									
+								}
+								progress++;
+							}
+						});
+						Thread t3 = new Thread(() -> {
+							for (int i = (2 * length / 4) ; i < (3 * length / 4) ; i++) {
+								System.out.println("3:" + i);
+								if (prog.isCanceled()) break;
+								
+								CompoundTag tg = (CompoundTag) modTagList[i];
+								Map<String, Tag> tgMap = tg.getValue();
+								String modid = ((StringTag) tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
+								if (!modid.equals("minecraft") && !modid.equals("FML") && !modid.equals("mcp")) {
+									modList.add(new Mod(modid, ((StringTag) tgMap.get("ModVersion")).getValue(), json));
+									
+								}
+								progress++;
+								
+							}
+						});
+						Thread t4 = new Thread(() -> {
+							for (int i = (3 * length / 4) ; i < length ; i++) {
+								System.out.println("4:" + i);
+								if (prog.isCanceled()) break;
+								
+								CompoundTag tg = (CompoundTag) modTagList[i];
+								Map<String, Tag> tgMap = tg.getValue();
+								String modid = ((StringTag) tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
+								if (!modid.equals("minecraft") && !modid.equals("FML") && !modid.equals("mcp")) {
+									modList.add(new Mod(modid, ((StringTag) tgMap.get("ModVersion")).getValue(), json));
+									
+								}
+//									if(i== modTagList.length-1) {
+//										progress = modTagList.length+1;
+//									}else {
+								progress++;
+//									}
+							}
+						});
+						Thread checker = new Thread(() -> {
+							while (true) {
+								if (!t1.isAlive() && !t2.isAlive() && !t3.isAlive() && !t4.isAlive()) {
+									if (modList.size() < modTagList.length) {
+										for (int i = 0 ; i < modTagList.length ; i++) {
+											CompoundTag tg = (CompoundTag) modTagList[i];
+											Map<String, Tag> tgMap = tg.getValue();
+											String modid = ((StringTag) tgMap.get("ModId")).getValue().replace("<", "").replace(">", "");
+											Mod m = new Mod(modid, ((StringTag) tgMap.get("ModVersion")).getValue(), json, false);
+											if (!modid.equals("minecraft") && !modid.equals("FML") && !modid.equals("mcp") && !modList.contains(m)) modList.add(m);
+										}
+									}
+									final ModListWindow win = new ModListWindow(modList, w);
+									prog.setVisible(false);
+									win.setVisible(true);
+									break;
+								}
+								else {
+									prog.updateProgress(progress);
+								}
+							}
+						});
+						
+						
+						t1.start();
+						t2.start();
+						t3.start();
+						t4.start();
+						checker.start();
+						prog.setVisible(true);
 					}
 				};
 				t.start();
@@ -590,10 +587,10 @@ public class mainWindow extends JFrame{
 		mntmChangeBackupBolder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setFileSelectionMode(chooser.DIRECTORIES_ONLY);
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.setDialogTitle("Choose backup directory");
 				int result = chooser.showSaveDialog(instance);
-				if(result == JFileChooser.CANCEL_OPTION) return;
+				if (result == JFileChooser.CANCEL_OPTION) return;
 				try {
 					Main.saveConfig(chooser.getSelectedFile().getAbsolutePath(), Main.nbtexplorer, chckbxAutomaticUpdateCheck.isSelected());
 				} catch (IOException e1) {
@@ -713,7 +710,7 @@ public class mainWindow extends JFrame{
     	}
     	worlds = worldList;
 		for(int i=0;i<worldList.size();i++) {
-		list.addElement((World)worldList.get(i));
+			list.addElement(worldList.get(i));
 		}
 	}catch(Exception e) {
 	}

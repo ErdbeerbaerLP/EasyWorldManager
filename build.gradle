@@ -62,8 +62,8 @@ shadowJar {
     relocate "com.google.gson", "wmshadow.com.google.gson"
 }
 dependencies {
-    shade 'com.github.TheRandomLabs:TRLUtils:-SNAPSHOT'
     shade group: 'org.json', name: 'json', version: '20180813'
+    shade 'com.github.TheRandomLabs:TRLUtils:67595dcc23'
     shade 'com.github.TheRandomLabs:CurseAPI-Minecraft:026882e290'
     shade group: 'commons-io', name: 'commons-io', version: '2.5'
     shade 'com.github.neilwightman:jnbt:master-SNAPSHOT'
@@ -99,14 +99,14 @@ jar {
         )
     }
 }
-/*
+
 curseforge {
     // $GRADLE_USER_HOME/gradle.properties
-    apiKey = getProperty("curseforge.apikey");
+    apiKey = getProperty("curseforge.apikey")
     project {
         id = '305393'
         changelog = project.changelog
-        releaseType = 'release'
+        releaseType = 'beta'
         addGameVersion '1.12.2'
         addGameVersion '1.12.1'
         addGameVersion '1.12'
@@ -136,4 +136,4 @@ curseforge {
         }
     }
 }
-*/
+tasks.curseforge.dependsOn(build)
