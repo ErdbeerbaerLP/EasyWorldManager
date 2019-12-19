@@ -1,12 +1,7 @@
 package de.erdbeerbaerlp.worldManager;
 
-import java.awt.Component;
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
+import java.awt.*;
 
 public class WorldRenderer extends JLabel implements ListCellRenderer<World> { 
 
@@ -29,7 +24,6 @@ public class WorldRenderer extends JLabel implements ListCellRenderer<World> {
             setBackground(list.getBackground()); 
             setForeground(list.getForeground()); 
         }
-        return this; 
-    } 
-    
+        return this;
+    }
 }

@@ -1,7 +1,10 @@
 package de.erdbeerbaerlp.worldManager;
 
-import java.awt.Desktop;
-import java.awt.List;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -10,17 +13,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 
 public class ModInfoWindow extends JDialog{
 	private final JScrollPane scrollPane = new JScrollPane();
@@ -105,14 +97,14 @@ public ModInfoWindow(Mod m) {
 	list.setBounds(10, 20, 124, 142);
 	list.removeAll();
 	for(int i=0;i<m.authors.size();i++) {
-		list.add(m.authors.get(i).username()+" ("+m.authors.get(i).type().name()+")");
+		list.add(m.authors.get(i).name()/*+" ("+m.authors.get(i).type().name()+")"*/);
 	}
 	panel.add(list);
 	lblnewestFile.setBounds(290, 108, 230, 31);
-	lblnewestFile.setText("<html><b>Newest File:</b> "+(m.newestFile == null ? "Unknown":m.newestFile.name()));
+	lblnewestFile.setText("<html><b>Newest File:</b> " + (m.newestFile == null ? "Unknown" : m.newestFile.displayName()));
 	getContentPane().add(lblnewestFile);
 	lblversion.setBounds(290, 150, 196, 14);
-	lblversion.setText("<html><b>Minecraft Version: </b>"+(m.newestFile == null ? "Unknown":m.newestFile.gameVersionString()));
+	lblversion.setText("<html><b>Minecraft Version: </b>" + (m.newestFile == null ? "Unknown" : m.newestFile.gameVersionStrings().stream().findFirst().get()));
 	getContentPane().add(lblversion);
 }
 }

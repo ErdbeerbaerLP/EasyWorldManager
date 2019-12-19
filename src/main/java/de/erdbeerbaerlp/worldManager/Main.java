@@ -1,25 +1,12 @@
 package de.erdbeerbaerlp.worldManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import net.minecraftforge.fml.common.ProgressManager;
+import org.jnbt.*;
+
+import javax.swing.*;
+import java.io.*;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-
-import org.jnbt.CompoundTag;
-import org.jnbt.DoubleTag;
-import org.jnbt.IntTag;
-import org.jnbt.NBTInputStream;
-import org.jnbt.Tag;
-
-import net.minecraftforge.fml.common.ProgressManager;
 
 public class Main {
 	protected static File configFile = new File(System.getProperty("user.home") +"/EasyWorldManager.properties");
@@ -30,7 +17,6 @@ public class Main {
 	public static final String version = "1.1.6";
 	private static void setWindows() {
 		try {
-            
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } 
     catch (Exception e) {
@@ -94,7 +80,7 @@ public class Main {
 				configFile.createNewFile();
 				FirstRunWindow firstrun = new FirstRunWindow();
 				firstrun.setVisible(true);
-				saveConfig(firstrun.backupDir,"",true);
+				saveConfig(FirstRunWindow.backupDir, "", true);
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -145,7 +131,7 @@ public class Main {
     	mainWindow window = new mainWindow();
     	window.worldDir = dir.getAbsolutePath();
     	window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    	window.isMod = true;
+		mainWindow.isMod = true;
     	window.setTitle(window.getTitle()+" - Loaded as Mod");
     	window.loadWorlds();
     	return window;

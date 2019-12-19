@@ -1,27 +1,27 @@
 package de.erdbeerbaerlp.worldManager;
 
-import static com.therandomlabs.utils.logging.Logging.getLogger;
+import com.therandomlabs.curseapi.CurseAPI;
+import com.therandomlabs.curseapi.file.CurseFile;
+import com.therandomlabs.curseapi.minecraft.CurseAPIMinecraft;
+import com.therandomlabs.curseapi.project.CurseMember;
+import com.therandomlabs.curseapi.project.CurseProject;
+import com.therandomlabs.curseapi.project.CurseSearchQuery;
+import com.therandomlabs.curseapi.project.CurseSearchSort;
+import com.therandomlabs.utils.collection.TRLList;
+import org.json.JSONObject;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.lang.reflect.Constructor;
+import javax.swing.*;
+import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
-import javax.swing.ImageIcon;
-
-import org.json.JSONObject;
-
-import com.therandomlabs.curseapi.CurseForgeSite;
-import com.therandomlabs.curseapi.file.CurseFile;
-import com.therandomlabs.curseapi.project.CurseProject;
-import com.therandomlabs.curseapi.project.Member;
-import com.therandomlabs.curseapi.project.MemberType;
-import com.therandomlabs.utils.collection.TRLList;
+import static com.therandomlabs.utils.logging.Logging.getLogger;
 
 public class Mod implements Comparable<Mod>{
 	public String version;
@@ -39,7 +39,7 @@ public class Mod implements Comparable<Mod>{
 	public URI uri;
 	public boolean exclude = false;
 	public String owner;
-	public TRLList<Member> authors;
+	public TRLList<CurseMember> authors;
 	private String slug;
 	public CurseFile newestFile;
 	
@@ -64,28 +64,37 @@ public class Mod implements Comparable<Mod>{
 		    	}
 		    }
 			}
-			final CurseProject p = CurseProject.fromSlug(CurseForgeSite.MINECRAFT, this.slug);
-			if(p.site() == CurseForgeSite.MINECRAFT) {
-			this.name = p.title();
+			final Optional<List<CurseProject>> search = CurseAPI.searchProjects(new CurseSearchQuery().gameID(CurseAPIMinecraft.MINECRAFT_ID).searchFilter(this.slug).sortingMethod(CurseSearchSort.NAME).pageSize(100));
+			if (!search.isPresent()) throw new Exception("Not Found");
+			CurseProject p = null;
+			//Parse projects by slug
+			for (final CurseProject pr : search.get()) {
+				if (pr.slug().equals(this.slug)) {
+					p = pr;
+				}
+			}
+			if (p == null) throw new Exception("Not Found");
+			this.name = p.name();
 			this.id = p.id();
-			this.owner = p.members(MemberType.OWNER).get(0).username();
-			this.authors = p.members();
+			this.owner = p.author().name();
+			final TRLList<CurseMember> curseMembers = new TRLList<>();
+			curseMembers.addAll(p.authors());
+			this.authors = curseMembers;
 			this.lastUpdated = p.lastUpdateTime();
 			this.creationTime = p.creationTime();
-			this.shortDescription = p.shortDescription();
-			this.newestFile = p.latestFile();
-			this.fullDescription = p.descriptionHTML().toString();
-			this.downloads = p.downloads();
+			this.shortDescription = p.summary();
+			this.newestFile = p.files().last();
+			this.fullDescription = p.description().html();
+			this.downloads = p.downloadCount();
 			
-			if(p.thumbnail().getHeight() != p.thumbnail().getWidth()) {
-				final Dimension test = getScaledDimension(new Dimension(p.thumbnail().getWidth(), p.thumbnail().getHeight()), new Dimension(65,65));
-				this.icon = new ImageIcon(p.thumbnail().getScaledInstance(test.width, test.height, Image.SCALE_SMOOTH));
+			if (p.avatarThumbnail().getHeight() != p.avatarThumbnail().getWidth()) {
+				final Dimension test = getScaledDimension(new Dimension(p.avatarThumbnail().getWidth(), p.avatarThumbnail().getHeight()), new Dimension(65, 65));
+				this.icon = new ImageIcon(p.avatarThumbnail().getScaledInstance(test.width, test.height, Image.SCALE_SMOOTH));
 			}else {
-				this.icon = new ImageIcon(p.thumbnail().getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+				this.icon = new ImageIcon(p.avatarThumbnail().getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 			}
-			this.uri = p.url().toURI();
+			this.uri = p.url().uri();
 			this.complete = true;
-			}else {
 				if(this.modid.toLowerCase().equals("forge")) {
 					this.icon = new ImageIcon(new ImageIcon(mainWindow.class.getResource("/de/erdbeerbaerlp/worldManager/icons/forge.png")).getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 					this.uri = new URL("http://files.minecraftforge.net").toURI();
@@ -94,10 +103,10 @@ public class Mod implements Comparable<Mod>{
 					this.lastUpdated = null;
 					this.creationTime = null;
 					this.downloads = -1;
-					this.shortDescription = "Minecraft Forge is minecraft´s modding API.";
-					this.fullDescription = "Minecraft Forge is minecraft´s modding API.<br>Without Forge you will be unable to install any mods to Minecraft!";
+					this.shortDescription = "Minecraft Forge is minecraftï¿½s modding API.";
+					this.fullDescription = "Minecraft Forge is minecraftï¿½s modding API.<br>Without Forge you will be unable to install any mods to Minecraft!";
 					this.owner = "Many";
-					TRLList<Member> authors = new TRLList<Member>();
+					/*TRLList<CurseMember> authors = new TRLList<Member>();
 					Constructor<Member> constructor;
 			        constructor = Member.class.getDeclaredConstructor(MemberType.class, String.class);
 			        constructor.setAccessible(true);
@@ -110,26 +119,21 @@ public class Mod implements Comparable<Mod>{
 					authors.add(constructor.newInstance(MemberType.AUTHOR, "LexManos"));
 					authors.add(constructor.newInstance(MemberType.AUTHOR, "Bspkrs"));
 					authors.add(constructor.newInstance(MemberType.CONTRIBUTOR, "Others"));
-					
+					*/
 					
 					this.authors = authors;
 					this.complete = true;
-				}else {
-				System.out.println("INVALID CURSE SITE \""+p.game()+"\"!");
-				throw new Exception();
-				}
-			}
+				}//else {
+			//System.out.println("INVALID CURSE SITE \""+p.game()+"\"!");
+			//throw new Exception();
+			//}
+			
 			
 		}catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			try {
 				this.uri = new URL("https://www.google.de/search?q=minecraft+mod+"+this.modid.replace("|", "%7C").replace(" ", "+")+"+"+this.version).toURI();
-			} catch (MalformedURLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (URISyntaxException e1) {
-				// TODO Auto-generated catch block
+			} catch (MalformedURLException | URISyntaxException e1) {
 				e1.printStackTrace();
 			}
 			this.complete = false;
@@ -165,7 +169,6 @@ public class Mod implements Comparable<Mod>{
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		if(this.modid.equals("forge")) return "1";
 		else return this.complete ? this.name:this.modid;
 	}
