@@ -63,8 +63,7 @@ shadowJar {
 }
 dependencies {
     shade group: 'org.json', name: 'json', version: '20180813'
-    shade 'com.github.TheRandomLabs:TRLUtils:67595dcc23'
-    shade 'com.github.TheRandomLabs:CurseAPI-Minecraft:026882e290'
+    shade 'com.github.ErdbeerbaerLP:CurseAPI:2a6ce93777'
     shade group: 'commons-io', name: 'commons-io', version: '2.5'
     shade 'com.github.neilwightman:jnbt:master-SNAPSHOT'
     shade 'com.github.zeroturnaround:zt-zip:master'

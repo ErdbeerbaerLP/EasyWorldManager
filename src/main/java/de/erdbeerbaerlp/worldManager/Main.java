@@ -9,20 +9,20 @@ import java.util.Map;
 import java.util.Properties;
 
 public class Main {
-	protected static File configFile = new File(System.getProperty("user.home") +"/EasyWorldManager.properties");
+	protected static File configFile = new File(System.getProperty("user.home") + "/EasyWorldManager.properties");
 	protected static String backupDir;
 	protected static String nbtexplorer;
 	protected static boolean autoUpdate;
-	protected static final String versionID = "116";
-	public static final String version = "1.1.6";
+	public static final String version = "1.1.7";
+	protected static final String versionID = "117";
+
 	private static void setWindows() {
 		try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } 
-    catch (Exception e) {
-       // handle exception
-    }
-    
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			// handle exception
+		}
+
 	}
 	
 	public static void main(String[] args) {
@@ -137,7 +137,6 @@ public class Main {
     	return window;
 	}
 	public static ImageIcon getIcon(String name) {
-		// TODO Auto-generated method stub
 		return new ImageIcon(Main.class.getResource("/de/erdbeerbaerlp/worldManager/icons/"+name));
 	}
 	public static String convertFileSize(long bytes, boolean si) {
