@@ -101,6 +101,8 @@ jar {
 
 curseforge {
     // $GRADLE_USER_HOME/gradle.properties
+    
+    if (project.hasProperty('curseforge.apikey')) {
     apiKey = getProperty("curseforge.apikey")
     project {
         id = '305393'
@@ -134,5 +136,6 @@ curseforge {
             displayName = "EasyWorldManager-$project.version (MC 1.8-1.12)"
         }
     }
+}
 }
 tasks.curseforge.dependsOn(build)
